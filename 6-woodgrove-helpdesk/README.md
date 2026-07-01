@@ -38,7 +38,7 @@ After the ARM deployment finishes, deploy application content to the app service
 2. Go to `Deployment Center`.
 3. Configure source deployment with:
     - Source: `External Git`
-    - Repository: `https://github.com/Azure-Samples/active-directory-verifiable-credentials-dotnet.git`
+    - Repository: `https://github.com/billmcilhargey/active-directory-verifiable-credentials-dotnet.git`
     - Branch: `main`
     - Build provider: `App Service Build Service`
 4. Save and run `Sync`.
@@ -132,12 +132,6 @@ az rest --method POST \
 
 You need an account with enough directory permissions to grant app role assignments (for example, Cloud Application Administrator or higher).
 
-#### Can this be fully automated in ARM?
-
-Not in a plain resource group ARM deployment. This permission assignment is an Entra ID (tenant-level Microsoft Graph) operation, while the template deploys Azure resources in a resource group.
-
-It can be automated as an additional step (for example, pipeline/CLI script after deployment, or a deployment script with the right Graph permissions), but it is intentionally kept as a post-deployment step in this sample.
-
 ## Troubleshooting
 
 ### Deploy to Azure completed but site is empty
@@ -146,6 +140,16 @@ If deployment reports a failure for `Microsoft.Web/sites/sourcecontrols`, or the
 
 Resolve it by opening `Deployment Center` and configuring source deployment using the same repository and branch listed in [Deploy to Azure](#deploy-to-azure), then run `Sync`.
 
+### Deployment Center fails with `'deploy.cmd' is not recognized`
+
+This sample uses a project-folder deployment command (`cd %PROJECT% && deploy.cmd`). The `deploy.cmd` script is included in `6-woodgrove-helpdesk` and is required for App Service Build Service deployments.
+
+If you still see this error, confirm all of the following:
+
+1. Deployment Center points to this repository and branch (`billmcilhargey/main`).
+2. The latest commit is deployed (the commit must include `6-woodgrove-helpdesk/deploy.cmd`).
+3. App setting `PROJECT` is set to `6-woodgrove-helpdesk`.
+
 If you are deploying this sample to Azure App Services, then you can view app logging information in the `Log stream` if you do the following:
 
 - Go to Development Tools, then Extensions
@@ -153,4 +157,3 @@ If you are deploying this sample to Azure App Services, then you can view app lo
 - Go to `Log stream` and set `Log level` drop down filter to `verbose`
 
 The Log stream console will now contain traces from the deployed app. Do not forget to disable the extension when troubleshooting is done.
-
