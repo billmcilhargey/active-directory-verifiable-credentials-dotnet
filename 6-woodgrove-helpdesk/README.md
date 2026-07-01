@@ -1,24 +1,24 @@
 ---
-page_type: sample
+
 languages:
 - dotnet
 products:
 - microsoft entra
 - verified id
-description: "A code sample for prooving identity with face check at a helpdesk, using Entra Verified ID"
+description: "A code sample for proving identity with Face Check at a helpdesk, using Entra Verified ID"
 urlFragment: "6-woodgrove-helpdesk"
 ---
 # Verified ID Code Sample for Woodgrove Helpdesk
 
-This sample is show casing identifying yourself at a helpdesk by presenting your [VerifiedEmployee](https://learn.microsoft.com/en-us/entra/verified-id/how-to-use-quickstart-verifiedemployee) card.
-The helpdesk websites require a Face Check together with the presentation for high assurance that the person is who they claim to be before getting support. 
+This sample showcases how to identify yourself at a helpdesk by presenting your [VerifiedEmployee](https://learn.microsoft.com/en-us/entra/verified-id/how-to-use-quickstart-verifiedemployee) card.
+The helpdesk website requires a Face Check together with the presentation for high assurance that the person is who they claim to be before getting support.
 More info about this pattern can be found [here](https://learn.microsoft.com/en-us/entra/verified-id/helpdesk-with-verified-id).
 
 **Note** - it is a demo app and not a real helpdesk portal.
 
 ## Deploy to Azure
 
-Complete the [setup](#Setup) before deploying to Azure so that you have all the required parameters.
+Complete the [setup](#setup) before deploying to Azure so that you have all the required parameters.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Factive-directory-verifiable-credentials-dotnet%2Fmain%2F6-woodgrove-helpdesk%2FARMTemplate%2Ftemplate.json)
 
@@ -28,6 +28,20 @@ You need to enter the following parameters:
 1. Your DID for your Entra Verified ID authority. After setting up Verified ID, you find your DID [here](https://portal.azure.com/#view/Microsoft_AAD_DecentralizedIdentity/InitialMenuBlade/~/issuerSettingsBlade)
 
 ![Deployment Parameters](ReadmeFiles/DeployToAzure.png)
+
+After the ARM deployment finishes, deploy application content to the app service.
+
+1. In Azure portal, open your App Service.
+2. Go to `Deployment Center`.
+3. Configure source deployment with:
+    - Source: `External Git`
+    - Repository: `https://github.com/Azure-Samples/active-directory-verifiable-credentials-dotnet.git`
+    - Branch: `main`
+    - Build provider: `App Service Build Service`
+4. Save and run `Sync`.
+5. Verify that deployment logs show success, then browse to your site URL.
+
+If you skip this second step, the web app will be created but no application content will be deployed.
 
 ## Using the sample
 
@@ -43,7 +57,7 @@ To use the sample, do the following:
     - Share the credential and the liveness result
 - Step 3
     - In final step, your email and displayName will show together with your face check score.
-    - The webapp says "a support personnel will be you shortly", but don't wait for too long as this is just a sample....
+    - The web app says "a support person will be with you shortly", but do not wait too long because this is just a sample.
 
 ## Using the sample on a mobile phone
 
@@ -58,7 +72,7 @@ Follow the steps above, with the additions.
 
 The sample is prepared to send a message to a Microsoft Teams channel using a [webhook](https://learn.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/what-are-webhooks-and-connectors). 
 
-**Please note: ** this is just a sample to show how this idea of Teams integration can be achieved. This is not a production ready code. For production, use server side logic or use options like Azure Logic apps, that could pick the verification state from the application DB and send out Teams notifications or REST API updates to external systems.
+**Please note:** this is just a sample to show how this Teams integration idea can be achieved. It is not production-ready code. For production, use server-side logic or options like Azure Logic Apps that can read verification state from the application database and send Teams notifications or REST API updates to external systems.
 
 In order to extend the sample, create an [incoming webhook](https://learn.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook?tabs=newteams%2Cdotnet) and update the app's configuration in your Azure AppService's configuration:
 
@@ -87,7 +101,7 @@ You don't need to do an app registration in Entra ID.
 ### Configuring Managed Identity
 
 1. Enable Managed Identity for your App Service app at `Settings` > `Identity`
-1. In portal.azure.com, open the `Cloud Shell` in powershell mode and run the following to grant your MSI service principal the permission to call Verified ID.
+1. In portal.azure.com, open `Cloud Shell` in PowerShell mode and run the following script to grant your MSI service principal permission to call Verified ID.
 
 ```Powershell
 $TenantID="<YOUR TENANTID>"
@@ -114,11 +128,17 @@ New-AzureAdServiceAppRoleAssignment -ObjectId $MSI.ObjectId -PrincipalId $MSI.Ob
 
 ## Troubleshooting
 
+### Deploy to Azure completed but site is empty
+
+If deployment reports a failure for `Microsoft.Web/sites/sourcecontrols`, or the site is empty, the App Service resource was likely created without code content.
+
+Resolve it by opening `Deployment Center` and configuring source deployment using the same repository and branch listed in [Deploy to Azure](#deploy-to-azure), then run `Sync`.
+
 If you are deploying this sample to Azure App Services, then you can view app logging information in the `Log stream` if you do the following:
 
 - Go to Development Tools, then Extensions
 - Select `+ Add` and add `ASP.NET Core Logging Integration` extension
 - Go to `Log stream` and set `Log level` drop down filter to `verbose`
 
-The Log stream console will now contain traces from the deployed. Don't forget do disable extension when troubleshooting is done.
+The Log stream console will now contain traces from the deployed app. Do not forget to disable the extension when troubleshooting is done.
 
