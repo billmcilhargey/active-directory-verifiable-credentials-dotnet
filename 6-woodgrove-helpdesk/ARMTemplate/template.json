@@ -13,7 +13,7 @@
     "Project": {
       "type": "string",
       "metadata": {
-        "description": "The subfolder in the repository containing this sample's project file. Used by App Service Build Service to locate and build the correct project. Do not change this value."
+        "description": "The subfolder in the repository containing this samples project file. Used by App Service Build Service to locate and build the correct project. Do not change this value."
       },
       "defaultValue": "6-woodgrove-helpdesk"
     },
