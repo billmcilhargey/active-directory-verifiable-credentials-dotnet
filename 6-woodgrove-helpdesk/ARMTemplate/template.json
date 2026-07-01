@@ -201,7 +201,7 @@
           "index.php",
           "hostingstart.html"
         ],
-        "netFrameworkVersion": "v10.0",
+        "netFrameworkVersion": "v10",
         "requestTracingEnabled": false,
         "remoteDebuggingEnabled": false,
         "httpLoggingEnabled": true,
