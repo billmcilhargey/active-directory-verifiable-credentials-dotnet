@@ -103,31 +103,40 @@ You don't need to do an app registration in Entra ID.
 
 ### Configuring Managed Identity
 
-1. Enable Managed Identity for your App Service app at `Settings` > `Identity`
-1. In portal.azure.com, open `Cloud Shell` in PowerShell mode and run the following script to grant your MSI service principal permission to call Verified ID.
+1. Enable Managed Identity for your App Service app at `Settings` > `Identity`.
+2. In portal.azure.com, open `Cloud Shell` in Bash mode and run the following script to grant your app's managed identity permission to call Verified ID.
 
-```Powershell
-$TenantID="<YOUR TENANTID>"
-$YourAppName="<NAME OF YOUR AZURE WEBAPP>"
+```bash
+RG="<YOUR RESOURCE GROUP>"
+WEBAPP_NAME="<NAME OF YOUR AZURE WEBAPP>"
 
-#Do not change this values below
-#
-$ApiAppId = "3db474b9-6a0c-4840-96ac-1fceb342124f"
-$PermissionName = "VerifiableCredential.Create.PresentRequest"
- 
-# Install the module
-Install-Module AzureAD
+# Do not change these values.
+VERIFIED_ID_APP_ID="3db474b9-6a0c-4840-96ac-1fceb342124f"
+VERIFIED_ID_ROLE_VALUE="VerifiableCredential.Create.PresentRequest"
 
-Connect-AzureAD -TenantId $TenantID
+# Managed identity service principal object ID.
+MI_SP_OBJECT_ID=$(az webapp identity show -g "$RG" -n "$WEBAPP_NAME" --query principalId -o tsv)
 
-$MSI = (Get-AzureADServicePrincipal -Filter "displayName eq '$YourAppName'")
+# Service principal object ID for the Verified ID resource app.
+RESOURCE_SP_OBJECT_ID=$(az ad sp list --filter "appId eq '$VERIFIED_ID_APP_ID'" --query "[0].id" -o tsv)
 
-Start-Sleep -Seconds 10
+# App role ID to assign.
+APP_ROLE_ID=$(az ad sp show --id "$VERIFIED_ID_APP_ID" --query "appRoles[?value=='$VERIFIED_ID_ROLE_VALUE' && contains(allowedMemberTypes, 'Application')].id | [0]" -o tsv)
 
-$ApiServicePrincipal = Get-AzureADServicePrincipal -Filter "appId eq '$ApiAppId'"
-$AppRole = $ApiServicePrincipal.AppRoles | Where-Object {$_.Value -eq $PermissionName -and $_.AllowedMemberTypes -contains "Application"}
-New-AzureAdServiceAppRoleAssignment -ObjectId $MSI.ObjectId -PrincipalId $MSI.ObjectId ` -ResourceId $ApiServicePrincipal.ObjectId -Id $AppRole.Id
+# Grant app role assignment to the managed identity.
+az rest --method POST \
+    --uri "https://graph.microsoft.com/v1.0/servicePrincipals/$MI_SP_OBJECT_ID/appRoleAssignments" \
+    --headers "Content-Type=application/json" \
+    --body "{\"principalId\":\"$MI_SP_OBJECT_ID\",\"resourceId\":\"$RESOURCE_SP_OBJECT_ID\",\"appRoleId\":\"$APP_ROLE_ID\"}"
 ```
+
+You need an account with enough directory permissions to grant app role assignments (for example, Cloud Application Administrator or higher).
+
+#### Can this be fully automated in ARM?
+
+Not in a plain resource group ARM deployment. This permission assignment is an Entra ID (tenant-level Microsoft Graph) operation, while the template deploys Azure resources in a resource group.
+
+It can be automated as an additional step (for example, pipeline/CLI script after deployment, or a deployment script with the right Graph permissions), but it is intentionally kept as a post-deployment step in this sample.
 
 ## Troubleshooting
 
