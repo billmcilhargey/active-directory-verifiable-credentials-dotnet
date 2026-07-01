@@ -10,20 +10,6 @@
         "description": "app name."
       }
     },
-    "repoURL": {
-      "type": "string",
-      "metadata": {
-        "description": "Github repo URL"
-      },
-      "defaultValue": "https://github.com/Azure-Samples/active-directory-verifiable-credentials-dotnet.git"
-    },
-    "branch": {
-      "type": "string",
-      "metadata": {
-        "description": "Github repo branch"
-      },
-      "defaultValue": "main"
-    },
     "Project": {
       "type": "string",
       "metadata": {
