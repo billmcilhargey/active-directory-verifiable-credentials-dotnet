@@ -4,23 +4,23 @@
   "parameters": {
     "webAppName": {
       "type": "string",
-      "defaultValue": "<App Name>",
+    "defaultValue": "<App Name>",
       "minLength": 2,
       "metadata": {
-        "description": "app name."
+        "description": "Globally unique name for the App Service web app. Must be 2-60 characters, lowercase letters, numbers, and hyphens only. Example: contoso-helpdesk. Your app will be available at https://<appname>.azurewebsites.net"
       }
     },
     "Project": {
       "type": "string",
       "metadata": {
-        "description": "Github repo subfolder"
+        "description": "The subfolder in the repository containing this sample's project file. Used by App Service Build Service to locate and build the correct project. Do not change this value."
       },
       "defaultValue": "6-woodgrove-helpdesk"
     },
     "DidAuthority": {
       "type": "string",
       "metadata": {
-        "description": "DidAuthority"
+        "description": "Your Entra Verified ID authority DID (Decentralized Identifier). Example: did:web:verifiedid.contoso.com. Find your DID in the Azure portal under Verified ID > Overview, or see https://aka.ms/verifiedid-did for setup guidance."
       },
       "defaultValue": "<DidAuthority>"
     },
