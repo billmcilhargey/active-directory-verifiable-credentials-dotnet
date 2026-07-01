@@ -37,10 +37,36 @@
         "description": "DidAuthority"
       },
       "defaultValue": "<DidAuthority>"
+    },
+    "appServicePlanSku": {
+      "type": "string",
+      "defaultValue": "B1",
+      "allowedValues": [
+        "F1",
+        "B1",
+        "S1"
+      ],
+      "metadata": {
+        "description": "App Service plan SKU. F1 (Free), B1 (Basic), or S1 (Standard)."
+      }
     }
   },
   "variables": {
-    "appServicePlanPortalName": "[concat(parameters('webAppName'), '-plan')]"
+    "appServicePlanPortalName": "[concat(parameters('webAppName'), '-plan')]",
+    "planSkuMap": {
+      "F1": {
+        "tier": "Free",
+        "family": "F"
+      },
+      "B1": {
+        "tier": "Basic",
+        "family": "B"
+      },
+      "S1": {
+        "tier": "Standard",
+        "family": "S"
+      }
+    }
   },
   "resources": [
     {
@@ -49,10 +75,10 @@
       "name": "[variables('appServicePlanPortalName')]",
       "location": "[resourceGroup().location]",
       "sku": {
-        "name": "B1",
-        "tier": "Basic",
-        "size": "B1",
-        "family": "B",
+        "name": "[parameters('appServicePlanSku')]",
+        "tier": "[variables('planSkuMap')[parameters('appServicePlanSku')].tier]",
+        "size": "[parameters('appServicePlanSku')]",
+        "family": "[variables('planSkuMap')[parameters('appServicePlanSku')].family]",
         "capacity": 1
       },
       "kind": "app",

@@ -25,7 +25,10 @@ Complete the [setup](#setup) before deploying to Azure so that you have all the 
 You need to enter the following parameters:
 
 1. The app name. This needs to be globally unique as it will be part of your URL, like https://your-app-name.azurewebsites.net/
-1. Your DID for your Entra Verified ID authority. After setting up Verified ID, you find your DID [here](https://portal.azure.com/#view/Microsoft_AAD_DecentralizedIdentity/InitialMenuBlade/~/issuerSettingsBlade)
+
+2. Your DID for your Entra Verified ID authority. After setting up Verified ID, you find your DID [here](https://portal.azure.com/#view/Microsoft_AAD_DecentralizedIdentity/InitialMenuBlade/~/issuerSettingsBlade)
+
+3. App Service plan SKU: choose `F1` (Free), `B1` (Basic), or `S1` (Standard). Default is `B1`.
 
 ![Deployment Parameters](ReadmeFiles/DeployToAzure.png)
 
