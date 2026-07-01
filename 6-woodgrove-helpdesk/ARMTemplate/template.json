@@ -7,7 +7,7 @@
     "defaultValue": "<App Name>",
       "minLength": 2,
       "metadata": {
-        "description": "Globally unique name for the App Service web app. Must be 2-60 characters, lowercase letters, numbers, and hyphens only. Example: contoso-helpdesk. Your app will be available at https://<appname>.azurewebsites.net"
+        "description": "Globally unique name for the App Service web app. Must be 2-60 characters, lowercase letters, numbers, and hyphens only. Example: contoso-helpdesk. Your app will be available at https://appname.azurewebsites.net"
       }
     },
     "Project": {
